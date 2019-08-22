@@ -2,10 +2,12 @@ import pymongo
 import os
 from flask import Flask, request, jsonify
 from authenticator import authenticate_request
+from flask_cors import CORS
 
 
 MONGO_URI = os.environ.get('MONGO_URI')
 app = Flask(__name__)
+CORS(app)
 client = pymongo.MongoClient(MONGO_URI)
 db = client['torrents']
 
@@ -39,7 +41,7 @@ def torrent_action():
             return jsonify({'message': 'Success!'}), 201
 
         except pymongo.errors.DuplicateKeyError as e:
-            return jsonify({'message': str(e)}), 403
+            return jsonify({'message': str(e)}), 409
 
         except Exception as e:
             return jsonify(({'message': str(e)})), 500
