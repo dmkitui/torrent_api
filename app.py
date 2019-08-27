@@ -31,6 +31,16 @@ def torrent_action():
     elif request.method == 'POST':
         magnet = request.headers.get('magnet')
 
+        try:
+            action = request.headers.get('action')
+            print('Actioned')
+            torrent_to_update = db.new_torrents.find({'magnet': magnet}, {'_id': False})
+            torrent_to_update.status = 'stale'
+            torrent_to_update.save()
+            return jsonify(({'message': 'Torrent Updated'}))
+        except KeyError as e:
+            pass
+
         if not magnet:
             return jsonify({'message': 'Magnet not supplied, jingoist!'}), 400
 
