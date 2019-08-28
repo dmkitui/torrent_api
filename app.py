@@ -31,18 +31,15 @@ def torrent_action():
     elif request.method == 'POST':
         magnet = request.headers.get('magnet')
 
-        try:
-            action = request.headers.get('action')
-            print('Actioned')
-            torrent_to_update = db.new_torrents.find({'magnet': magnet}, {'_id': False})
-            torrent_to_update.status = 'stale'
-            torrent_to_update.save()
-            return jsonify(({'message': 'Torrent Updated'}))
-        except KeyError as e:
-            pass
-
+        # try:
         if not magnet:
             return jsonify({'message': 'Magnet not supplied, jingoist!'}), 400
+
+        action = request.headers.get('action')
+        print('Actioned: ', action)
+        if action == 'downloaded':
+            db.new_torrents.find_one_and_update({'magnet': magnet}, {'$set': {'status': 'stale'}})
+            return jsonify(({'message': 'Torrent Updated'})), 200
 
         new_save = {'magnet': magnet, 'status': 'fresh'}
 
