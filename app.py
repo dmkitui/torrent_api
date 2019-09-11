@@ -3,6 +3,7 @@ import os
 from flask import Flask, request, jsonify
 from authenticator import authenticate_request
 from flask_cors import CORS
+from bson.objectid import ObjectId
 
 
 MONGO_URI = os.environ.get('MONGO_URI')
@@ -36,9 +37,10 @@ def torrent_action():
             return jsonify({'message': 'Magnet not supplied, jingoist!'}), 400
 
         action = request.headers.get('action')
-        print('Actioned: ', action)
         if action == 'downloaded':
+            free_space = request.headers.get('free_space')
             db.new_torrents.find_one_and_update({'magnet': magnet}, {'$set': {'status': 'stale'}})
+            db.authentications.find_one_and_update({"_id": ObjectId("5d5d630d7c213e60b8f25ec8")}, {"$set": {"free_space": free_space}})
             return jsonify(({'message': 'Torrent Updated'})), 200
 
         new_save = {'magnet': magnet, 'status': 'fresh'}
