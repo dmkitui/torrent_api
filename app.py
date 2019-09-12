@@ -19,7 +19,7 @@ def torrent_action():
     password = request.headers.get('password')
 
     if not authenticate_request(token, password):
-        return jsonify({'message': 'Not authenticated'}), 401
+        return _corsify_res(jsonify({'message': 'Not authenticated'})), 401
 
     if request.method == "OPTIONS":
         return _cors_prelight_res()
