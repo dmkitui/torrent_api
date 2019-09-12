@@ -18,11 +18,11 @@ def torrent_action():
     token = request.headers.get('token')
     password = request.headers.get('password')
 
-    if not authenticate_request(token, password):
-        return _corsify_res(jsonify({'message': 'Not authenticated'})), 401
-
     if request.method == "OPTIONS":
         return _cors_prelight_res()
+
+    if not authenticate_request(token, password):
+        return _corsify_res(jsonify({'message': 'Not authenticated'})), 401
 
     if request.method == 'GET':
         available_torrents = list(db.new_torrents.find({'status': 'fresh'}, {'_id': False}))
