@@ -13,7 +13,7 @@ client = pymongo.MongoClient(MONGO_URI)
 db = client['torrents']
 
 
-@app.route("/torrent", methods=['POST', 'GET', 'OPTIONS'])
+@app.route("/torrent/", methods=['POST', 'GET', 'OPTIONS'])
 def torrent_action():
     token = request.headers.get('token')
     password = request.headers.get('password')
