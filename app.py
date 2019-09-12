@@ -1,9 +1,11 @@
 import pymongo
 import os
+import json
 from flask import Flask, request, jsonify
 from authenticator import authenticate_request
 from flask_cors import CORS
 from bson.objectid import ObjectId
+from bson.json_util import dumps
 
 
 MONGO_URI = os.environ.get('MONGO_URI')
@@ -23,11 +25,18 @@ def torrent_action():
 
     if request.method == 'GET':
         available_torrents = list(db.new_torrents.find({'status': 'fresh'}, {'_id': False}))
+        data = db.authentications.find_one()
 
-        if available_torrents:
-            return jsonify({'message': 'success', 'torrents': available_torrents}), 200
+        action = request.headers.get('action')
+
+        if action == 'free_space':
+            return jsonify({'message': 'success', 'free_space': data['free_space']})
+
         else:
-            return jsonify({'message': 'Nothing to download now. Kuwa Mpole!'}), 400
+            if available_torrents:
+                return jsonify({'message': 'success', 'torrents': available_torrents}), 200
+            else:
+                return jsonify({'message': 'Nothing to download now. Kuwa Mpole!'}), 400
 
     elif request.method == 'POST':
         magnet = request.headers.get('magnet')
