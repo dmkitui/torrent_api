@@ -4,25 +4,35 @@ from flask import Flask, request, jsonify, make_response
 from authenticator import authenticate_request
 from flask_cors import CORS
 from bson.objectid import ObjectId
-
+from functools import wraps
 
 MONGO_URI = os.environ.get('MONGO_URI')
+API_KEY = os.environ.get('API_KEY')
+
 app = Flask(__name__)
 CORS(app)
 client = pymongo.MongoClient(MONGO_URI)
 db = client['torrents']
 
 
+def authenticate(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if request.method == "OPTIONS":
+            return _cors_prelight_res()
+        auth = request.headers.get('X-Api-Key')
+        print('AUTH: ', auth)
+        print('API : ', API_KEY)
+        if not auth or auth != API_KEY:
+            print('Fuckers, am hungry....')
+            return _corsify_res(jsonify({'message': 'Not authenticated'})), 401
+        return f(*args, **kwargs)
+    return wrapper
+
+
 @app.route("/torrent/", methods=['POST', 'GET', 'OPTIONS'])
+@authenticate
 def torrent_action():
-    token = request.headers.get('token')
-    password = request.headers.get('password')
-
-    if request.method == "OPTIONS":
-        return _cors_prelight_res()
-
-    if not authenticate_request(token, password):
-        return _corsify_res(jsonify({'message': 'Not authenticated'})), 401
 
     if request.method == 'GET':
         available_torrents = list(db.new_torrents.find({'status': 'fresh'}, {'_id': False}))
@@ -69,6 +79,24 @@ def torrent_action():
         return _corsify_res(jsonify({'message': 'That Method is unsanctioned. Fuck off!'})), 400
 
 
+@app.route("/files/", methods=['POST', 'GET', 'OPTIONS'])
+@authenticate
+def file_manager():
+    if request.method == 'POST':
+        files = request.get_json()
+        for dir_data in files:
+            dir_data['deleted'] = False
+        try:
+            db.router_files.insert_many(files)
+        except pymongo.errors.DuplicateKeyError:
+            pass
+
+    elif request.method == 'GET':
+        pass
+
+    return _corsify_res(jsonify({'message': 'Working on it...'})), 200
+
+
 def _cors_prelight_res():
     response = make_response()
     response.headers.add("Access-Control-Allow-Origin", "*")
@@ -87,4 +115,5 @@ if __name__ == "__main__":
         client = pymongo.MongoClient(MONGO_URI)
         db = client['torrents']
         db.new_torrents.create_index([('magnet', 1)], unique=True)
+        db.router_files.create_index([('path', 1), ('size', 1)], unique=True)
     app.run()
