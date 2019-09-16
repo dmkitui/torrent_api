@@ -21,10 +21,8 @@ def authenticate(f):
         if request.method == "OPTIONS":
             return _cors_prelight_res()
         auth = request.headers.get('X-Api-Key')
-        print('AUTH: ', auth)
-        print('API : ', API_KEY)
+
         if not auth or auth != API_KEY:
-            print('Fuckers, am hungry....')
             return _corsify_res(jsonify({'message': 'Not authenticated'})), 401
         return f(*args, **kwargs)
     return wrapper
@@ -91,10 +89,11 @@ def file_manager():
         except pymongo.errors.DuplicateKeyError:
             pass
 
+        return _corsify_res(jsonify({'message': 'Success...'})), 200
+
     elif request.method == 'GET':
         pass
 
-    return _corsify_res(jsonify({'message': 'Working on it...'})), 200
 
 
 def _cors_prelight_res():
