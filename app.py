@@ -1,7 +1,6 @@
 import pymongo
 import os
-from flask import Flask, request, jsonify, make_response
-from authenticator import authenticate_request
+from flask import Flask, request, jsonify, make_response, render_template
 from flask_cors import CORS
 from bson.objectid import ObjectId
 from functools import wraps
@@ -10,12 +9,14 @@ MONGO_URI = os.environ.get('MONGO_URI')
 API_KEY = os.environ.get('API_KEY')
 
 app = Flask(__name__)
+# app.debug = True
 CORS(app)
 client = pymongo.MongoClient(MONGO_URI)
 db = client['torrents']
 
 
 def authenticate(f):
+    print('Are we authenitcating today?')
     @wraps(f)
     def wrapper(*args, **kwargs):
         if request.method == "OPTIONS":
@@ -82,18 +83,19 @@ def torrent_action():
 def file_manager():
     if request.method == 'POST':
         files = request.get_json()
-        for dir_data in files:
-            dir_data['deleted'] = False
+
         try:
-            db.router_files.insert_many(files)
+            db.router_files.insert(dict(files))
         except pymongo.errors.DuplicateKeyError:
-            pass
+            db.router_files.replace_one({}, dict(files))
 
         return _corsify_res(jsonify({'message': 'Success...'})), 200
 
     elif request.method == 'GET':
-        pass
 
+        file_tree = db.router_files.find_one({})
+
+        return render_template('home.html', all_files=file_tree)
 
 
 def _cors_prelight_res():
