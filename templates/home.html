@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% macro renderChildren(parent_dir, sub_dir, count) %}
+  <div class="info-row">
+  {% set divclass = "padd-" ~ count %}
+  <div class="dir-div col-12 {{ divclass }}" >
+    <h4>{{ parent_dir['name'] }}</h4>
+  </div>
+  {% for item in sub_dir | sort(attribute='type', reverse = True) %}
+    {% if item['type'] == 'directory' %}
+      {% set count = count + 10 %}
+      {{ renderChildren(item, item['children'], count) }}
+    {% else %}
+      {% set count = 0 %}
+      <div class="container file-div">
+        <div class="row">
+          <div class="col-8">{{ item['name'] }}</div>
+          <div class="col-4">{{ item['size'] }}</div>
+        </div>
+      </div>
+    {% endif%}
+  {% endfor %}
+  </div>
+{% endmacro %}
+
+{% block container %}
+  <div class="main-content">
+    <h2>Root: {{all_files['name']}}</h2>
+<!--    {% set count = 0 %}-->
+    {{ renderChildren(all_files, all_files['children']|sort(attribute='type', reverse = True), 0) }}
+  </div>
+{% endblock %}
