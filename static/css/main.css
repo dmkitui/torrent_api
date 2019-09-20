@@ -1,13 +1,12 @@
 .dir-div {
     color: black;
-    /*border: 1px solid gray;*/
-    /*width: 80%;*/
 }
 
 .file-div {
     color: #4e555b;
-    /*width: 60%;*/
-    padding-left: 50px;
+    border-left: 1px solid gray;
+    margin-left: 50px;
+    display: none;
 }
 
 .main-content {
@@ -18,37 +17,55 @@
 h4 {
     /*background-color: lightgrey;*/
 }
+.padd-0 {
+    /*padding-left: 10px;*/
+    font-size: xx-large;
+    font-weight: bolder;
+}
 
 .padd-10 {
     padding-left: 10px;
+    font-size: larger;
+    font-weight: bold;
 }
 .padd-20 {
     padding-left: 20px;
+    font-size: large;
+    font-weight: bold;
 }
-.padd-30 {
+.padd-30, .padd-40, .padd-50, .padd-60, .padd-70, .padd-80, .padd-80{
     padding-left: 30px;
+    font-size: large;
+    font-weight: normal;
 }
 .padd-40 {
-    padding-left: 40px;
+    padding-left: 40px !important;
 }
 .padd-50 {
-    padding-left: 50px;
+    padding-left: 50px !important;
 }
 .padd-60 {
-    padding-left: 60px;
+    padding-left: 60px !important;
 }
 .padd-70 {
-    padding-left: 70px;
+    padding-left: 70px !important;
 }
 .padd-80 {
-    padding-left: 80px;
+    padding-left: 80px !important;
 }
 .padd-90 {
-    padding-left: 90px;
+    padding-left: 90px !important;
 }
 
 .info-row {
     padding-left: 10px;
 }
 
+.div-size {
+    float: right;
+}
+
+.div-name {
+    float: left;
+}
 
