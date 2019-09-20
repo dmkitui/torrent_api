@@ -23,28 +23,28 @@
 
 {% macro renderChildren(parent_dir, sub_dir, count) %}
   <div class="info-row">
-  {% set divclass = "padd-" ~ count %}
-  <div class="dir-div col-12 {{ divclass }}" >
-    <div class="row">
-      <div class="col-10 dir-name"><span>{{ parent_dir['name'] }}</span></div>
-      <div class="col-2 div-size ml-auto">{{ folderSize(sub_dir) }}</div>
-    </div>
-
-  </div>
-  {% for item in sub_dir | sort(attribute='type', reverse = True) %}
-    {% if item['type'] == 'directory' %}
-      {% set count = count + 10 %}
-      {{ renderChildren(item, item['children'], count) }}
-    {% else %}
-      {% set count = 0 %}
-      <div class="container file-div">
+      {% set divclass = "padd-" ~ count %}
+      <div class="dir-div col-12 {{ divclass }}" >
         <div class="row">
-          <div class="col-9 dir-name">{{ item['name'] }}</div>
-          <div class="col-3 div-size ml-auto">{{ item['size']|filesizeformat(true) }}</div>
+          <div class="col-10 dir-name"><span>{{ parent_dir['name'] }}</span></div>
+          <div class="col-2 div-size ml-auto">{{ folderSize(sub_dir) }}</div>
         </div>
+
       </div>
-    {% endif%}
-  {% endfor %}
+      {% for item in sub_dir | sort(attribute='type', reverse = True) %}
+        {% if item['type'] == 'directory' %}
+          {% set count = count + 10 %}
+          {{ renderChildren(item, item['children'], count) }}
+        {% else %}
+          {% set count = 0 %}
+          <div class="container" id="dir-files">
+            <div class="row file-div">
+              <div class="col-9 dir-name">{{ item['name'] }}</div>
+              <div class="col-3 div-size ml-auto">{{ item['size']|filesizeformat(true) }}</div>
+            </div>
+          </div>
+        {% endif%}
+      {% endfor %}
   </div>
 {% endmacro %}
 {% block container %}
