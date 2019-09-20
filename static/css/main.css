@@ -1,11 +1,23 @@
 .dir-div {
     color: black;
 }
+.dir-div:hover {
+    background-color: #1e7e34;
+    color: white;
+}
 
 .file-div {
     color: #4e555b;
     border-left: 1px solid gray;
     margin-left: 50px;
+    /*display: none;*/
+}
+
+.file-div:hover {
+    background-color: lightgrey;
+}
+
+#dir-files {
     display: none;
 }
 
