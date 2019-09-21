@@ -29,7 +29,7 @@
           <div class="col-10 dir-name"><span>{{ parent_dir['name'] }}</span></div>
           <div class="col-2 div-size ml-auto">
               {{ folderSize(sub_dir) }}
-              <div class="delete-btn"><i class="fa fa-trash" aria-hidden="true"></i></div>
+              <div data-path="{{ parent_dir['path'] }}" class="delete-btn"><i class="fa fa-trash" aria-hidden="true"></i></div>
           </div>
         </div>
 
