@@ -80,4 +80,8 @@ h4 {
 .div-name {
     float: left;
 }
-
+.delete-btn {
+    display: none;
+    float: right;
+    /*display: inline-block !important;*/
+}
