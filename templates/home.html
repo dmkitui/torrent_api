@@ -24,10 +24,13 @@
 {% macro renderChildren(parent_dir, sub_dir, count) %}
   <div class="info-row">
       {% set divclass = "padd-" ~ count %}
-      <div class="dir-div col-12 {{ divclass }}" >
+      <div class="dir-div col-12 {{ divclass }}">
         <div class="row">
           <div class="col-10 dir-name"><span>{{ parent_dir['name'] }}</span></div>
-          <div class="col-2 div-size ml-auto">{{ folderSize(sub_dir) }}</div>
+          <div class="col-2 div-size ml-auto">
+              {{ folderSize(sub_dir) }}
+              <div class="delete-btn"><i class="fa fa-trash" aria-hidden="true"></i></div>
+          </div>
         </div>
 
       </div>
@@ -40,7 +43,12 @@
           <div class="container" id="dir-files">
             <div class="row file-div">
               <div class="col-9 dir-name">{{ item['name'] }}</div>
-              <div class="col-3 div-size ml-auto">{{ item['size']|filesizeformat(true) }}</div>
+              <div class="col-3 div-size ml-auto">
+                  {{ item['size']|filesizeformat(true) }}
+                  <div data-path="{{ item['path'] }}" class="delete-btn" id="delete-file">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                  </div>
+              </div>
             </div>
           </div>
         {% endif%}
@@ -48,8 +56,8 @@
   </div>
 {% endmacro %}
 {% block container %}
-  <div class="main-content">
-{#    <h2>Root: {{all_files['name']}}</h2>#}
-    {{ renderChildren(all_files, all_files['children']|sort(attribute='type', reverse = True), 0) }}
-  </div>
+    <div class="main-content">
+        {#    <h2>Root: {{all_files['name']}}</h2>#}
+        {{ renderChildren(all_files, all_files['children']|sort(attribute='type', reverse = True), 0) }}
+    </div>
 {% endblock %}
