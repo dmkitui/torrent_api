@@ -2,15 +2,13 @@
     color: black;
 }
 .dir-div:hover {
-    background-color: #1e7e34;
+    background-color: darkgrey;
     color: white;
 }
 
 .file-div {
     color: #4e555b;
-    border-left: 1px solid gray;
     margin-left: 50px;
-    /*display: none;*/
 }
 
 .file-div:hover {
@@ -82,11 +80,9 @@ h4 {
 }
 .delete-btn {
     display: none;
-    float: right;
-    /*display: inline-block !important;*/
-}
+    float: right;}
 
 .deleted {
     background-color: #FCE2DC;
-    transition: background-color 2s linear;
+    transition: background-color 1s linear;
 }
