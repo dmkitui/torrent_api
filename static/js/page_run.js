@@ -5,7 +5,7 @@ const expand_dir_view = (event) => {
 
 const deleteAction = (path, el_to_delete) => {
 	console.log('Path: ', path)
-	const url = 'http://127.0.0.1:5000/delete-files/'
+	const url = 'https://torrents-api.herokuapp.com/delete-files/'
 	const apiKey = 'emdl%4E60PLWzVpuZomzxQej1U0pMIBYZ10n2DEg@j8uP^Ikp7h#0m1qWLU#K0S' //process.env.API_KEY
 	$.ajax({
 		url: url,
