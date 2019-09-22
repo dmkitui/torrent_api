@@ -16,7 +16,6 @@ db = client['torrents']
 
 
 def authenticate(f):
-    print('Are we authenitcating today?')
     @wraps(f)
     def wrapper(*args, **kwargs):
         if request.method == "OPTIONS":
@@ -96,6 +95,50 @@ def file_manager():
         file_tree = db.router_files.find_one({})
 
         return render_template('home.html', all_files=file_tree)
+
+
+@app.route("/delete-one/", methods=['POST', 'GET'])
+@authenticate
+def delete_one():
+    delete_path = request.headers.get('Delete-Path')
+    if delete_path:
+        print('We deleting some shit: ', delete_path)
+        current_files = db.router_files.find_one({})
+
+        def update_deleted(file_tree, to_delete):
+            for k, v in file_tree.items():
+                # print('CURRENT FILE TREE: ', file_tree)
+                if k == 'path' and v == to_delete:
+                    file_tree['status'] = 'deleted'
+                    if file_tree['type'] == 'directory':
+                        update_children(file_tree['children'])
+                    return True
+                elif k == 'children':
+                    if isinstance(v, list):
+                        for x in v:
+                            if update_deleted(x, to_delete):
+                                return True
+                else:
+                    continue
+
+        def update_children(children):
+            for item in children:
+                item['status'] = 'deleted'
+                if item['type'] == 'directory':
+                    update_children(item['children'])
+
+        update_status = update_deleted(current_files, delete_path)
+        print('Update STATE: ', update_status)
+        if update_status:
+            try:
+                db.router_files.replace_one({}, current_files)
+                return _corsify_res(jsonify({'message': 'Update Successful'})), 201
+            except Exception as e:
+                return _corsify_res(jsonify({'message': 'Update Error:' + str(e)})), 500
+
+    else:
+        print('No delete path, chief. What the heck?')
+        return _corsify_res(jsonify({'message': 'Some issue...'})), 400
 
 
 def _cors_prelight_res():
