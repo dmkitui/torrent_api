@@ -85,3 +85,8 @@ h4 {
     float: right;
     /*display: inline-block !important;*/
 }
+
+.deleted {
+    background-color: #FCE2DC;
+    transition: background-color 2s linear;
+}
