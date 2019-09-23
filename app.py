@@ -36,12 +36,11 @@ def torrent_action():
 
     if request.method == 'GET':
         available_torrents = list(db.new_torrents.find({'status': 'fresh'}, {'_id': False}))
-        data = db.authentications.find_one()
-
+        data = db.free_space.find_one()
         action = request.headers.get('action')
 
         if action == 'free_space':
-            return _corsify_res(jsonify({'message': 'success', 'free_space': data['free_space']}))
+            return _corsify_res(jsonify({'message': 'success', 'free_space': data['disk_info']}))
 
         else:
             if available_torrents:
@@ -100,12 +99,13 @@ def file_manager():
     elif request.method == 'GET':
 
         file_tree = db.router_files.find_one({})
+        disk_info = db.free_space.find_one({})
 
         files = {'type': 'ROOT', 'name': 'Home Router Files', 'children': file_tree['children'], 'path': './', 'status': 'READONLY'}
 
-        return render_template('home.html', all_files=files, credentials={'DELETE_URL': DELETE_URL,
-                                                                          'API_KEY': API_KEY,
-                                                                          'ENV': ENV})
+        return render_template('home.html', all_files=files, disk_info=disk_info, credentials={'DELETE_URL': DELETE_URL,
+                                                                                               'API_KEY': API_KEY,
+                                                                                               'ENV': ENV})
 
 
 @app.route("/delete-files/", methods=['POST', 'GET'])
