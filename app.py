@@ -83,12 +83,20 @@ def torrent_action():
 @authenticate
 def file_manager():
     if request.method == 'POST':
-        files = request.get_json()
+        data = request.get_json()
+
+        files = data['files']
+        disk_info = data['disk_info']
 
         try:
             db.router_files.insert(dict(files))
         except pymongo.errors.DuplicateKeyError:
             db.router_files.replace_one({}, dict(files))
+
+        try:
+            db.free_space.find_one_and_update({}, disk_info)
+        except:
+            pass
 
         return _corsify_res(jsonify({'message': 'Success...'})), 200
 
