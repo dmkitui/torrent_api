@@ -171,7 +171,8 @@ def delete_one():
                 else:
                     continue
 
-        get_deleted_files(current_files)
+        if current_files:
+            get_deleted_files(current_files)
 
         print('DELETED FILES: ', len(deleted_files))
         if deleted_files:
