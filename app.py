@@ -88,15 +88,17 @@ def file_manager():
         files = data['files']
         disk_info = data['disk_info']
 
+        print('DISK SPACE: ', disk_info)
+
         try:
             db.router_files.insert(dict(files))
         except pymongo.errors.DuplicateKeyError:
             db.router_files.replace_one({}, dict(files))
 
         try:
-            db.free_space.insert(dict(disk_info))
+            db.free_space.insert({'disk_info': disk_info})
         except:
-            db.free_space.replace_one({}, dict(disk_info))
+            db.free_space.replace_one({}, {'disk_info': disk_info})
             pass
 
         return _corsify_res(jsonify({'message': 'Success...'})), 200
