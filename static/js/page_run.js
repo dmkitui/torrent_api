@@ -1,17 +1,18 @@
+const appCredentials = appConfig
+
+const DELETE_URL = appCredentials.DELETE_URL
+const API_KEY = appCredentials.API_KEY
 
 const expand_dir_view = (event) => {
 	$(event.currentTarget).children('#dir-files').slideToggle()  //show()
 }
 
 const deleteAction = (path, el_to_delete) => {
-	console.log('Path: ', path)
-	const url = 'https://torrents-api.herokuapp.com/delete-files/'
-	const apiKey = 'emdl%4E60PLWzVpuZomzxQej1U0pMIBYZ10n2DEg@j8uP^Ikp7h#0m1qWLU#K0S' //process.env.API_KEY
 	$.ajax({
-		url: url,
+		url: DELETE_URL,
 		headers: {
 			'Content-Type': 'application/json',
-			'X-Api-Key': apiKey,
+			'X-Api-Key': API_KEY,
 			'Delete-Path': path,
 		},
 		type: "post",

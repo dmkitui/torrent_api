@@ -7,6 +7,8 @@ from functools import wraps
 
 MONGO_URI = os.environ.get('MONGO_URI')
 API_KEY = os.environ.get('API_KEY')
+DELETE_URL = os.environ.get('DELETE_URL')
+ENV = os.environ.get('ENV')
 
 app = Flask(__name__)
 # app.debug = True
@@ -94,7 +96,9 @@ def file_manager():
 
         file_tree = db.router_files.find_one({})
 
-        return render_template('home.html', all_files=file_tree)
+        return render_template('home.html', all_files=file_tree, credentials={'DELETE_URL': DELETE_URL,
+                                                                              'API_KEY': API_KEY,
+                                                                              'ENV': ENV})
 
 
 @app.route("/delete-files/", methods=['POST', 'GET'])
@@ -108,7 +112,6 @@ def delete_one():
 
             def update_deleted(file_tree, to_delete):
                 for k, v in file_tree.items():
-                    # print('CURRENT FILE TREE: ', file_tree)
                     if k == 'path' and v == to_delete:
                         file_tree['status'] = 'deleted'
                         if file_tree['type'] == 'directory':
