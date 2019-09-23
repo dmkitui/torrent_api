@@ -94,8 +94,9 @@ def file_manager():
             db.router_files.replace_one({}, dict(files))
 
         try:
-            db.free_space.find_one_and_update({}, disk_info)
+            db.free_space.insert(dict(disk_info))
         except:
+            db.free_space.replace_one({}, dict(disk_info))
             pass
 
         return _corsify_res(jsonify({'message': 'Success...'})), 200
