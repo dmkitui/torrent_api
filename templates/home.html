@@ -61,7 +61,11 @@
 {% endmacro %}
 {% block container %}
     <div class="main-content">
-        {#    <h2>Root: {{all_files['name']}}</h2>#}
-        {{ renderChildren(all_files, all_files['children']|sort(attribute='type', reverse = True), 0) }}
+        <div class="root-dir container">
+            {{ all_files['name'] }}
+        </div>
+        <div>
+            {{ renderChildren(all_files, all_files['children']|sort(attribute='type', reverse = True), 0) }}
+        </div>
     </div>
 {% endblock %}

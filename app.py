@@ -96,9 +96,11 @@ def file_manager():
 
         file_tree = db.router_files.find_one({})
 
-        return render_template('home.html', all_files=file_tree, credentials={'DELETE_URL': DELETE_URL,
-                                                                              'API_KEY': API_KEY,
-                                                                              'ENV': ENV})
+        files = {'type': 'ROOT', 'name': 'Home Router Files', 'children': file_tree['children'], 'path': './', 'status': 'READONLY'}
+
+        return render_template('home.html', all_files=files, credentials={'DELETE_URL': DELETE_URL,
+                                                                          'API_KEY': API_KEY,
+                                                                          'ENV': ENV})
 
 
 @app.route("/delete-files/", methods=['POST', 'GET'])
