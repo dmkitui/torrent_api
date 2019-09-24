@@ -40,6 +40,7 @@ def torrent_action():
         action = request.headers.get('action')
 
         if action == 'free_space':
+            print('Data info:', data['disk_info'])
             return _corsify_res(jsonify({'message': 'success', 'free_space': data['disk_info']}))
 
         else:
@@ -57,9 +58,7 @@ def torrent_action():
 
         action = request.headers.get('action')
         if action == 'downloaded':
-            # free_space = request.headers.get('free_space')
             db.new_torrents.find_one_and_update({'magnet': magnet}, {'$set': {'status': 'stale'}})
-            # db.authentications.find_one_and_update({"_id": ObjectId("5d5d630d7c213e60b8f25ec8")}, {"$set": {"free_space": free_space}})
             return _corsify_res(jsonify(({'message': 'Torrent Updated'}))), 200
 
         new_save = {'magnet': magnet, 'status': 'fresh'}
