@@ -36,12 +36,12 @@ def torrent_action():
 
     if request.method == 'GET':
         available_torrents = list(db.new_torrents.find({'status': 'fresh'}, {'_id': False}))
-        data = db.authentications.find_one()
-
+        data = db.free_space.find_one()
         action = request.headers.get('action')
 
         if action == 'free_space':
-            return _corsify_res(jsonify({'message': 'success', 'free_space': data['free_space']}))
+            print('Data info:', data['disk_info'])
+            return _corsify_res(jsonify({'message': 'success', 'free_space': data['disk_info']}))
 
         else:
             if available_torrents:
@@ -58,9 +58,7 @@ def torrent_action():
 
         action = request.headers.get('action')
         if action == 'downloaded':
-            free_space = request.headers.get('free_space')
             db.new_torrents.find_one_and_update({'magnet': magnet}, {'$set': {'status': 'stale'}})
-            db.authentications.find_one_and_update({"_id": ObjectId("5d5d630d7c213e60b8f25ec8")}, {"$set": {"free_space": free_space}})
             return _corsify_res(jsonify(({'message': 'Torrent Updated'}))), 200
 
         new_save = {'magnet': magnet, 'status': 'fresh'}
@@ -83,24 +81,30 @@ def torrent_action():
 @authenticate
 def file_manager():
     if request.method == 'POST':
-        files = request.get_json()
+        data = request.get_json()
+
+        files = data['files']
+        disk_info = data['disk_info']
 
         try:
             db.router_files.insert(dict(files))
         except pymongo.errors.DuplicateKeyError:
             db.router_files.replace_one({}, dict(files))
 
+        db.free_space.find_one_and_update({"_id": ObjectId("5d88eb2d4d9bb5e32fe35efa")}, {"$set": {"disk_info": disk_info}})
+
         return _corsify_res(jsonify({'message': 'Success...'})), 200
 
     elif request.method == 'GET':
 
         file_tree = db.router_files.find_one({})
+        disk_info = db.free_space.find_one({})
 
         files = {'type': 'ROOT', 'name': 'Home Router Files', 'children': file_tree['children'], 'path': './', 'status': 'READONLY'}
 
-        return render_template('home.html', all_files=files, credentials={'DELETE_URL': DELETE_URL,
-                                                                          'API_KEY': API_KEY,
-                                                                          'ENV': ENV})
+        return render_template('home.html', all_files=files, disk_info=disk_info, credentials={'DELETE_URL': DELETE_URL,
+                                                                                               'API_KEY': API_KEY,
+                                                                                               'ENV': ENV})
 
 
 @app.route("/delete-files/", methods=['POST', 'GET'])
@@ -162,7 +166,8 @@ def delete_one():
                 else:
                     continue
 
-        get_deleted_files(current_files)
+        if current_files:
+            get_deleted_files(current_files)
 
         print('DELETED FILES: ', len(deleted_files))
         if deleted_files:
