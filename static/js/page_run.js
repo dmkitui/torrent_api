@@ -4,7 +4,7 @@ const DELETE_URL = appCredentials.DELETE_URL
 const API_KEY = appCredentials.API_KEY
 
 const expand_dir_view = (event) => {
-	$(event.currentTarget).children('#dir-files').slideToggle()  //show()
+	$(event.currentTarget).siblings('.dir-content').slideToggle()
 }
 
 const deleteAction = (path, el_to_delete) => {
@@ -28,9 +28,13 @@ const deleteAction = (path, el_to_delete) => {
 }
 
 $(window).on('load', function() {
-	$('.info-row').on('click', expand_dir_view);
+	$('.directory-row').on('click', expand_dir_view);
 	
-	$('.dir-div, .file-div').hover(function(e){
+	$('.file-div').hover(function(e){
+		$(this).find('.delete-btn').show()}, function () {
+			$(this).find('.delete-btn').hide()
+		});
+	$('.directory-row').hover(function(e){
 		$(this).find('.delete-btn').show()}, function () {
 			$(this).find('.delete-btn').hide()
 		});
