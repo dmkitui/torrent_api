@@ -21,51 +21,60 @@
     {% endif %}
 {% endmacro %}
 
-{% macro renderChildren(parent_dir, sub_dir, count) %}
-  <div class="info-row {{ parent_dir['status'] }}" id="info-row-div">
-      {% set divclass = "padd-" ~ count %}
-      <div class="dir-div col-12 {{ divclass }}">
-        <div class="row">
-            <div class="col-10 dir-name"><span>{{ parent_dir['name'] }}</span></div>
-            {% if parent_dir['status'] == 'available' %}
-                <div class="col-2 div-size ml-auto">
-                  {{ folderSize(sub_dir) }}
-                  <div data-cont="dir" data-path="{{ parent_dir['path'] }}" class="delete-btn"><i class="fa fa-trash" aria-hidden="true"></i></div>
-                </div>
-            {% endif %}
-        </div>
-
-      </div>
-      {% for item in sub_dir | sort(attribute='type', reverse = True) %}
-        {% if item['type'] == 'directory' %}
-          {% set count = count + 10 %}
-          {{ renderChildren(item, item['children'], count) }}
-        {% else %}
-          {% set count = 0 %}
-          <div class="container  {{ item['status'] }}" id="dir-files">
-            <div class="row file-div">
-              <div class="col-9 dir-name">{{ item['name'] }}</div>
+{% macro renderFile(elem) %}
+    <div class="container  {{ elem['status'] }}" id="dir-files" data-parent="{{ parent }}">
+        <div class="row file-div">
+          <div class="col-9 dir-name">{{ elem['name'] }}</div>
               <div class="col-3 div-size ml-auto">
-                  {{ item['size']|filesizeformat(true) }}
-                  {% if item['status'] == 'available' %}
-                      <div data-cont="file" data-path="{{ item['path'] }}" class="delete-btn" id="delete-file">
+                  {{ elem['size']|filesizeformat(true) }}
+                  {% if elem['status'] == 'available' %}
+                      <div data-cont="file" data-path="{{ elem['path'] }}" class="delete-btn" id="delete-file">
                           <i class="fa fa-trash" aria-hidden="true"></i>
                       </div>
                   {% endif %}
               </div>
-            </div>
-          </div>
-        {% endif%}
-      {% endfor %}
-  </div>
+        </div>
+    </div>
 {% endmacro %}
+
+{% macro renderElements(elem, count) %}
+    {% set divclass = "padd-" ~ count %}
+        {% if elem['type'] == 'directory' %}
+            <div class="container info-row {{ elem['status'] }}" id="info-row-div">
+                <div class="dir-div col-12 {{ divclass }}">
+                    <div class="row directory-row">
+                        <div class="col-10 dir-name"><span>{{ elem['name'] }}</span></div>
+                        {% if elem['status'] == 'available' %}
+                            <div class="col-2 div-size ml-auto">
+                              {{ folderSize(elem['children']) }}
+                              <div data-cont="dir" data-path="{{ elem['path'] }}" class="delete-btn"><i class="fa fa-trash" aria-hidden="true"></i></div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="dir-content">
+                        {% for file in elem['children'] %}
+                            {% set count = count + 20 %}
+                            {{ renderElements(file, count) }}
+                        {% endfor %}
+                        {% set count = 0 %}
+                    </div>
+                </div>
+            </div>
+        {% elif elem['type'] == 'file' %}
+            {{ renderFile(elem) }}
+        {% endif %}
+{% endmacro %}
+
+
 {% block container %}
     <div class="main-content">
         <div class="root-dir container">
-            {{ all_files['name'] }}
+            {{ file_tree['name'] }}
         </div>
         <div>
-            {{ renderChildren(all_files, all_files['children']|sort(attribute='type', reverse = True), 0) }}
+            {% for row in file_tree['children']|sort(attribute='type', reverse = True) %}
+                {{ renderElements(row, 0) }}
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
