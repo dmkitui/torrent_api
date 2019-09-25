@@ -2,20 +2,19 @@
     color: black;
 }
 .dir-div:hover {
-    background-color: darkgrey;
-    color: white;
+    /*background-color: darkgrey;*/
+    /*color: white;*/
 }
 
 .file-div {
     color: #4e555b;
-    margin-left: 50px;
+    margin-left: 30px;
 }
 
 .file-div:hover {
-    background-color: lightgrey;
+    /*background-color: lightgrey;*/
 }
-
-#dir-files {
+.dir-content {
     display: none;
 }
 
@@ -29,13 +28,13 @@ h4 {
 }
 .padd-0 {
     /*padding-left: 10px;*/
-    font-size: xx-large;
+    font-size: large;
     font-weight: bolder;
 }
 
 .padd-10 {
     padding-left: 10px;
-    font-size: larger;
+    font-size: large;
     font-weight: bold;
 }
 .padd-20 {
