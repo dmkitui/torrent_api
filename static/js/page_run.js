@@ -4,6 +4,7 @@ const DELETE_URL = appCredentials.DELETE_URL
 const API_KEY = appCredentials.API_KEY
 
 const expand_dir_view = (event) => {
+	$(event.currentTarget).children('.div-size').find('i').toggleClass('fa-folder-open-o')
 	$(event.currentTarget).siblings('.dir-content').slideToggle()
 }
 
@@ -56,8 +57,6 @@ $(window).on('load', function() {
 		} else {
 			let el_to_delete = ''
 		}
-		
-		console.log('Element: ', el_to_delete)
 		bootbox.confirm({
 		    size: 'large',
 				title: 'Confirm Delete File',
