@@ -3,7 +3,7 @@
     padding-right: 0;
 }
 .dir-div:hover {
-    background-color: #99FFCC;
+    background-color: #C9FAC7;
     cursor: pointer;
     /*color: white;*/
 }
@@ -59,10 +59,10 @@ h4 {
     font-weight: normal;
 }
 
-.padd-20:hover, .padd-40:hover, .padd-60:hover, .padd-80:hover, .padd-100:hover, .padd-120:hover, .padd-140:hover {
-    background-color: #C8F27D;
-    color: white;
-}
+/*.padd-20:hover, .padd-40:hover, .padd-60:hover, .padd-80:hover, .padd-100:hover, .padd-120:hover, .padd-140:hover {*/
+/*    background-color: #C8F27D;*/
+/*    color: white;*/
+/*}*/
 
 .padd-40 {
     padding-left: 40px !important;
@@ -86,7 +86,7 @@ h4 {
 .dir-div {
     padding-left: 10px;
     margin-top: 15px;
-    border: 1px solid rgb(160,160,255);
+    /*border: 1px solid rgb(160,160,255);*/
 }
 
 .div-size {
@@ -113,4 +113,11 @@ h4 {
 
 .file-size {
     text-align: right;
+}
+
+.expanded-dir {
+    background-color: #C9FAC7 ;
+    transition: background-color .5s linear;
+    border: 1px solid #C9FAC7;
+    border-radius: 10px;
 }
