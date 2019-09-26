@@ -4,6 +4,7 @@ const DELETE_URL = appCredentials.DELETE_URL
 const API_KEY = appCredentials.API_KEY
 
 const expand_dir_view = (event) => {
+	$(event.currentTarget).closest('.dir-div').addClass('expanded-dir')
 	$(event.currentTarget).children('.div-size').find('i').toggleClass('fa-folder-open-o')
 	$(event.currentTarget).siblings('.dir-content').slideToggle()
 }
