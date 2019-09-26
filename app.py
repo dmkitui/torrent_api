@@ -100,11 +100,14 @@ def file_manager():
         file_tree = db.router_files.find_one({})
         disk_info = db.free_space.find_one({})
 
-        files = {'type': 'directory', 'name': 'Home Router Files', 'children': file_tree['children'], 'path': './', 'status': 'READONLY'}
-
-        return render_template('home.html', file_tree=files, disk_info=disk_info, credentials={'DELETE_URL': DELETE_URL,
-                                                                                               'API_KEY': API_KEY,
-                                                                                               'ENV': ENV})
+        if file_tree:
+            files = {'type': 'directory', 'name': 'Home Router Files', 'children': file_tree['children'], 'path': './', 'status': 'READONLY'}
+            return render_template('home.html', file_tree=files, disk_info=disk_info,
+                                   credentials={'DELETE_URL': DELETE_URL,
+                                                'API_KEY': API_KEY,
+                                                'ENV': ENV})
+        else:
+            return render_template('home_empty.html')
 
 
 @app.route("/delete-files/", methods=['POST', 'GET'])
