@@ -3,9 +3,12 @@ const appCredentials = appConfig
 const DELETE_URL = appCredentials.DELETE_URL
 const API_KEY = appCredentials.API_KEY
 
+console.log('DELETE URL: ', DELETE_URL)
+
 const expand_dir_view = (event) => {
-	$(event.currentTarget).closest('.dir-div').addClass('expanded-dir')
-	$(event.currentTarget).children('.div-size').find('i').toggleClass('fa-folder-open-o')
+	$(event.currentTarget).closest('.dir-div').toggleClass('expanded-dir')
+	$(event.currentTarget).children('.dir-name').find('i').toggleClass('fa-folder-open-o')
+	$(event.currentTarget).children('.dir-name').find('.dir-metadata').slideToggle()
 	$(event.currentTarget).siblings('.dir-content').slideToggle()
 }
 
@@ -22,7 +25,6 @@ const deleteAction = (path, el_to_delete) => {
 		if (res.message === 'Update Successful') {
 			el_to_delete.removeClass('available')
 			el_to_delete.addClass('deleted')
-			console.log('El Class', el_to_delete.attr("class").split(/\s+/))
 		}
 	}).fail(error => {
 		console.log(`Error: ${error.status}: ${error.statusText}` )
@@ -73,7 +75,6 @@ $(window).on('load', function() {
 		        }
 		    },
 		    callback: function(result){
-		      console.log('User pick: ', result)
 			    if (result){
 			    	deleteAction(path, el_to_delete)
 			    }
