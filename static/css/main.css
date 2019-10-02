@@ -103,7 +103,8 @@ h4 {
 }
 
 .deleted {
-    background-color: #FCE2DC;
+    background-color: #FED7BA;
+    border: 1px solid #FEB179;
     transition: background-color 1s linear;
 }
 
@@ -120,4 +121,14 @@ h4 {
     transition: background-color .5s linear;
     border: 1px solid #C9FAC7;
     border-radius: 10px;
+}
+
+.dir-metadata {
+    font-size: small;
+    color: darkgreen;
+    padding-left: 25px;
+    display: none;
+}
+.dir-info-text {
+    font-weight: bolder;
 }
