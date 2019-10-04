@@ -13,6 +13,21 @@ const expand_dir_view = (event) => {
 }
 
 const deleteAction = (path, el_to_delete) => {
+	let parent;
+	if (el_to_delete.data('cont') === 'dir') {
+		parent = el_to_delete.parents('div[id="info-row-div"]').eq(0);
+	} else if (el_to_delete.data('cont') === 'file') {
+		parent = el_to_delete.parents('div[id="dir-files"]').eq(0);
+	} else {
+		parent = ''
+	}
+  const spinner = document.createElement('i')
+  spinner.alt = 'delete action'
+  spinner.setAttribute('class', 'fa fa-spinner fa-spin');
+  spinner.setAttribute('style', 'font-size:24px;color:red;');
+  console.log('Element: ', el_to_delete)
+  el_to_delete.replaceWith(spinner)
+	
 	$.ajax({
 		url: DELETE_URL,
 		headers: {
@@ -23,8 +38,9 @@ const deleteAction = (path, el_to_delete) => {
 		type: "post",
 	}).done((res) => {
 		if (res.message === 'Update Successful') {
-			el_to_delete.removeClass('available')
-			el_to_delete.addClass('deleted')
+			spinner.remove()
+			parent.removeClass('available')
+			parent.addClass('deleted')
 		}
 	}).fail(error => {
 		console.log(`Error: ${error.status}: ${error.statusText}` )
@@ -53,13 +69,7 @@ $(window).on('load', function() {
 		e.stopPropagation();
 		const path = $(this).data('path')
 		let el_to_delete = $(this);
-		if ($(this).data('cont') === 'dir') {
-			el_to_delete = $(this).parents('div[id="info-row-div"]').eq(0);
-		} else if ($(this).data('cont') === 'file') {
-			el_to_delete = $(this).parents('div[id="dir-files"]').eq(0);
-		} else {
-			let el_to_delete = ''
-		}
+
 		bootbox.confirm({
 		    size: 'large',
 				title: 'Confirm Delete File',
