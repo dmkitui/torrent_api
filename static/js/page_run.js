@@ -3,11 +3,31 @@ const appCredentials = appConfig
 const DELETE_URL = appCredentials.DELETE_URL
 const API_KEY = appCredentials.API_KEY
 
+console.log('DELETE URL: ', DELETE_URL)
+
 const expand_dir_view = (event) => {
-	$(event.currentTarget).children('#dir-files').slideToggle()  //show()
+	$(event.currentTarget).closest('.dir-div').toggleClass('expanded-dir')
+	$(event.currentTarget).children('.dir-name').find('i').toggleClass('fa-folder-open-o')
+	$(event.currentTarget).children('.dir-name').find('.dir-metadata').slideToggle()
+	$(event.currentTarget).siblings('.dir-content').slideToggle()
 }
 
 const deleteAction = (path, el_to_delete) => {
+	let parent;
+	if (el_to_delete.data('cont') === 'dir') {
+		parent = el_to_delete.parents('div[id="info-row-div"]').eq(0);
+	} else if (el_to_delete.data('cont') === 'file') {
+		parent = el_to_delete.parents('div[id="dir-files"]').eq(0);
+	} else {
+		parent = ''
+	}
+  const spinner = document.createElement('i')
+  spinner.alt = 'delete action'
+  spinner.setAttribute('class', 'fa fa-spinner fa-spin');
+  spinner.setAttribute('style', 'font-size:24px;color:red;');
+  console.log('Element: ', el_to_delete)
+  el_to_delete.replaceWith(spinner)
+	
 	$.ajax({
 		url: DELETE_URL,
 		headers: {
@@ -18,9 +38,9 @@ const deleteAction = (path, el_to_delete) => {
 		type: "post",
 	}).done((res) => {
 		if (res.message === 'Update Successful') {
-			el_to_delete.removeClass('available')
-			el_to_delete.addClass('deleted')
-			console.log('El Class', el_to_delete.attr("class").split(/\s+/))
+			spinner.remove()
+			parent.removeClass('available')
+			parent.addClass('deleted')
 		}
 	}).fail(error => {
 		console.log(`Error: ${error.status}: ${error.statusText}` )
@@ -28,9 +48,13 @@ const deleteAction = (path, el_to_delete) => {
 }
 
 $(window).on('load', function() {
-	$('.info-row').on('click', expand_dir_view);
+	$('.directory-row').on('click', expand_dir_view);
 	
-	$('.dir-div, .file-div').hover(function(e){
+	$('.file-div').hover(function(e){
+		$(this).find('.delete-btn').show()}, function () {
+			$(this).find('.delete-btn').hide()
+		});
+	$('.directory-row').hover(function(e){
 		$(this).find('.delete-btn').show()}, function () {
 			$(this).find('.delete-btn').hide()
 		});
@@ -45,15 +69,7 @@ $(window).on('load', function() {
 		e.stopPropagation();
 		const path = $(this).data('path')
 		let el_to_delete = $(this);
-		if ($(this).data('cont') === 'dir') {
-			el_to_delete = $(this).parents('div[id="info-row-div"]').eq(0);
-		} else if ($(this).data('cont') === 'file') {
-			el_to_delete = $(this).parents('div[id="dir-files"]').eq(0);
-		} else {
-			let el_to_delete = ''
-		}
-		
-		console.log('Element: ', el_to_delete)
+
 		bootbox.confirm({
 		    size: 'large',
 				title: 'Confirm Delete File',
@@ -69,7 +85,6 @@ $(window).on('load', function() {
 		        }
 		    },
 		    callback: function(result){
-		      console.log('User pick: ', result)
 			    if (result){
 			    	deleteAction(path, el_to_delete)
 			    }

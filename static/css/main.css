@@ -1,26 +1,36 @@
 .dir-div {
     color: black;
+    padding-right: 0;
 }
 .dir-div:hover {
-    background-color: darkgrey;
-    color: white;
+    background-color: #C9FAC7;
+    cursor: pointer;
+    /*color: white;*/
+}
+.info-row {
+    padding-right: 0;
+}
+
+.root-dir{
+    color: green;
+    text-align: center;
+    border-bottom: 2px solid green;
 }
 
 .file-div {
     color: #4e555b;
-    margin-left: 50px;
+    margin-left: 30px;
 }
 
 .file-div:hover {
     background-color: lightgrey;
 }
-
-#dir-files {
+.dir-content {
     display: none;
 }
 
 .main-content {
-    border: 1px solid black;
+    /*border: 1px solid black;*/
     /*width: 70%;*/
 }
 
@@ -29,13 +39,13 @@ h4 {
 }
 .padd-0 {
     /*padding-left: 10px;*/
-    font-size: xx-large;
+    font-size: large;
     font-weight: bolder;
 }
 
 .padd-10 {
     padding-left: 10px;
-    font-size: larger;
+    font-size: large;
     font-weight: bold;
 }
 .padd-20 {
@@ -48,31 +58,40 @@ h4 {
     font-size: large;
     font-weight: normal;
 }
+
+/*.padd-20:hover, .padd-40:hover, .padd-60:hover, .padd-80:hover, .padd-100:hover, .padd-120:hover, .padd-140:hover {*/
+/*    background-color: #C8F27D;*/
+/*    color: white;*/
+/*}*/
+
 .padd-40 {
     padding-left: 40px !important;
 }
-.padd-50 {
+.padd-60 {
     padding-left: 50px !important;
 }
-.padd-60 {
+.padd-80 {
     padding-left: 60px !important;
 }
-.padd-70 {
+.padd-100 {
     padding-left: 70px !important;
 }
-.padd-80 {
+.padd-120 {
     padding-left: 80px !important;
 }
-.padd-90 {
+.padd-140 {
     padding-left: 90px !important;
 }
 
-.info-row {
+.dir-div {
     padding-left: 10px;
+    margin-top: 15px;
+    /*border: 1px solid rgb(160,160,255);*/
 }
 
 .div-size {
     float: right;
+    text-align: center;
 }
 
 .div-name {
@@ -80,9 +99,36 @@ h4 {
 }
 .delete-btn {
     display: none;
-    float: right;}
+    text-align: left;
+}
 
 .deleted {
-    background-color: #FCE2DC;
+    background-color: #FED7BA;
+    border: 1px solid #FEB179;
     transition: background-color 1s linear;
+}
+
+.directory-size {
+    text-align: right;
+}
+
+.file-size {
+    text-align: right;
+}
+
+.expanded-dir {
+    background-color: #C9FAC7 ;
+    transition: background-color .5s linear;
+    border: 1px solid #C9FAC7;
+    border-radius: 10px;
+}
+
+.dir-metadata {
+    font-size: small;
+    color: darkgreen;
+    padding-left: 25px;
+    display: none;
+}
+.dir-info-text {
+    font-weight: bolder;
 }

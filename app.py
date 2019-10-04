@@ -1,9 +1,11 @@
 import pymongo
 import os
 from flask import Flask, request, jsonify, make_response, render_template
+from flask_moment import Moment
 from flask_cors import CORS
 from bson.objectid import ObjectId
 from functools import wraps
+from datetime import datetime
 
 MONGO_URI = os.environ.get('MONGO_URI')
 API_KEY = os.environ.get('API_KEY')
@@ -11,6 +13,7 @@ DELETE_URL = os.environ.get('DELETE_URL')
 ENV = os.environ.get('ENV')
 
 app = Flask(__name__)
+moment = Moment(app)
 # app.debug = True
 CORS(app)
 client = pymongo.MongoClient(MONGO_URI)
@@ -21,6 +24,7 @@ def authenticate(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         if request.method == "OPTIONS":
+            print('Are we getting here?')
             return _cors_prelight_res()
         auth = request.headers.get('X-Api-Key')
 
@@ -98,13 +102,23 @@ def file_manager():
     elif request.method == 'GET':
 
         file_tree = db.router_files.find_one({})
-        disk_info = db.free_space.find_one({})
+        disk_info = db.free_space.find_one({})['disk_info']
 
-        files = {'type': 'ROOT', 'name': 'Home Router Files', 'children': file_tree['children'], 'path': './', 'status': 'READONLY'}
+        if file_tree:
+            files = {
+                'type': 'directory',
+                 'name': 'Home Router Files',
+                 'children': file_tree['children'],
+                 'path': './',
+                 'status': 'READONLY'
+            }
 
-        return render_template('home.html', all_files=files, disk_info=disk_info, credentials={'DELETE_URL': DELETE_URL,
-                                                                                               'API_KEY': API_KEY,
-                                                                                               'ENV': ENV})
+            return render_template('home.html', file_tree=files, disk_info=disk_info,
+                                   credentials={'DELETE_URL': DELETE_URL,
+                                                'API_KEY': API_KEY,
+                                                'ENV': ENV})
+        else:
+            return render_template('home_empty.html')
 
 
 @app.route("/delete-files/", methods=['POST', 'GET'])
@@ -157,8 +171,7 @@ def delete_one():
             for k, v in file_tree.items():
                 if k == 'status' and v == 'deleted':
                     deleted_files.append(file_tree['path'])
-                    # if file_tree['type'] == 'directory':
-                    #     update_children(file_tree['children'])
+
                 elif k == 'children':
                     if isinstance(v, list):
                         for x in v:
@@ -169,7 +182,6 @@ def delete_one():
         if current_files:
             get_deleted_files(current_files)
 
-        print('DELETED FILES: ', len(deleted_files))
         if deleted_files:
             return _corsify_res(jsonify({'message': 'Some files to delete', 'files_to_delete': deleted_files})), 200
         else:
@@ -187,6 +199,14 @@ def _cors_prelight_res():
 def _corsify_res(response):
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
+
+
+@app.template_filter('timestamp_to_datetime')
+def timestamp_to_datetime(timestamp):
+    """Timestamp to datetime"""
+    if timestamp is None:
+        return ""
+    return datetime.fromtimestamp(timestamp)
 
 
 if __name__ == "__main__":
