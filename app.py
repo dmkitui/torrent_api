@@ -14,17 +14,13 @@ ENV = os.environ.get('ENV')
 
 app = Flask(__name__)
 moment = Moment(app)
-# app.debug = True
 CORS(app)
-client = pymongo.MongoClient(MONGO_URI)
-db = client['torrents']
 
 
 def authenticate(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         if request.method == "OPTIONS":
-            print('Are we getting here?')
             return _cors_prelight_res()
         auth = request.headers.get('X-Api-Key')
 
@@ -44,7 +40,6 @@ def torrent_action():
         action = request.headers.get('action')
 
         if action == 'free_space':
-            print('Data info:', data['disk_info'])
             return _corsify_res(jsonify({'message': 'success', 'free_space': data['disk_info']}))
 
         else:
@@ -107,7 +102,7 @@ def file_manager():
         if file_tree:
             files = {
                 'type': 'directory',
-                 'name': 'Home Router Files',
+                'name': 'Home Router Files',
                  'children': file_tree['children'],
                  'path': './',
                  'status': 'READONLY'
@@ -127,7 +122,6 @@ def delete_one():
     if request.method == 'POST':
         delete_path = request.headers.get('Delete-Path')
         if delete_path:
-            print('We deleting some shit: ', delete_path)
             current_files = db.router_files.find_one({})
 
             def update_deleted(file_tree, to_delete):
@@ -160,7 +154,6 @@ def delete_one():
                     return _corsify_res(jsonify({'message': 'Update Error:' + str(e)})), 500
 
         else:
-            print('No delete path, chief. What the heck?')
             return _corsify_res(jsonify({'message': 'Some issue...'})), 400
 
     elif request.method == 'GET':

@@ -30,8 +30,12 @@
 }
 
 .main-content {
-    /*border: 1px solid black;*/
-    /*width: 70%;*/
+    position: fixed;
+    top: 10px;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    z-index: 1
 }
 
 h4 {
@@ -132,3 +136,15 @@ h4 {
 .dir-info-text {
     font-weight: bolder;
 }
+
+.wrapper {
+    margin-top: 100px;
+    height: 750px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/*.content-view {*/
+/*    height: 50%;*/
+/*    border: solid 1px green;*/
+/*}*/
