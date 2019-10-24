@@ -16,6 +16,9 @@ app = Flask(__name__)
 moment = Moment(app)
 CORS(app)
 
+client = pymongo.MongoClient(MONGO_URI)
+db = client['torrents']
+
 
 def authenticate(f):
     @wraps(f)
@@ -204,8 +207,6 @@ def timestamp_to_datetime(timestamp):
 
 if __name__ == "__main__":
     with app.app_context():
-        client = pymongo.MongoClient(MONGO_URI)
-        db = client['torrents']
         db.new_torrents.create_index([('magnet', 1)], unique=True)
         db.router_files.create_index([('path', 1), ('size', 1)], unique=True)
     app.run()
