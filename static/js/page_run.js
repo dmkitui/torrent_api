@@ -25,7 +25,7 @@ const deleteAction = (path, el_to_delete) => {
   spinner.alt = 'delete action'
   spinner.setAttribute('class', 'fa fa-spinner fa-spin');
   spinner.setAttribute('style', 'font-size:24px;color:red;');
-  console.log('Element: ', el_to_delete)
+  console.log('Element: ', el_to_delete);
   el_to_delete.replaceWith(spinner)
 	
 	$.ajax({
