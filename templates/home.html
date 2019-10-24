@@ -41,7 +41,6 @@
         </div>
     </div>
 {% endmacro %}
-
 {% macro renderElements(elem, count) %}
     {% set divclass = "padd-" ~ count %}
     {% if elem['type'] == 'directory' %}
@@ -79,26 +78,7 @@
     {% endif %}
 {% endmacro %}
 {% block container %}
-    <div class="main-content">
-        <div class="root-dir container">
-            <h1>{{ file_tree['name'] }}</h1>
-            <div class="container">
-                <div class="disk-info container">
-                    <div class="row">
-                        <div class="col-4">
-                            Free Space: {{ disk_info[2]|filesizeformat(true) }}
-                        </div>
-                        <div class="col-4">
-                            Used Space: {{ disk_info[1]|filesizeformat(true) }}
-                        </div>
-                        <div class="col-4">
-                            Total: {{ disk_info[0]|filesizeformat(true) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <h6>{{ file_tree['data'] }}</h6>
-        </div>
+    <div class="wrapper">
         <div>
             {% for row in file_tree['children']|sort(attribute='type', reverse = True) %}
                 {{ renderElements(row, 0) }}
