@@ -144,7 +144,11 @@ h4 {
     overflow-x: hidden;
 }
 
-/*.content-view {*/
-/*    height: 50%;*/
-/*    border: solid 1px green;*/
-/*}*/
+.info-view {
+    display: none;
+}
+
+.icon-div {
+    padding: 0;
+    max-width: 2%;
+}

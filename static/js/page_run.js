@@ -1,16 +1,16 @@
-const appCredentials = appConfig
+const appCredentials = appConfig;
 
-const DELETE_URL = appCredentials.DELETE_URL
-const API_KEY = appCredentials.API_KEY
+const DELETE_URL = appCredentials.DELETE_URL;
+const API_KEY = appCredentials.API_KEY;
 
-console.log('DELETE URL: ', DELETE_URL)
+console.log('DELETE URL: ', DELETE_URL);
 
 const expand_dir_view = (event) => {
-	$(event.currentTarget).closest('.dir-div').toggleClass('expanded-dir')
-	$(event.currentTarget).children('.dir-name').find('i').toggleClass('fa-folder-open-o')
-	$(event.currentTarget).children('.dir-name').find('.dir-metadata').slideToggle()
+	$(event.currentTarget).closest('.dir-div').toggleClass('expanded-dir');
+	$(event.currentTarget).children('.dir-name').find('i').toggleClass('fa-folder-open-o');
+	$(event.currentTarget).children('.dir-name').find('.dir-metadata').slideToggle();
 	$(event.currentTarget).siblings('.dir-content').slideToggle()
-}
+};
 
 const deleteAction = (path, el_to_delete) => {
 	let parent;
@@ -21,12 +21,12 @@ const deleteAction = (path, el_to_delete) => {
 	} else {
 		parent = ''
 	}
-  const spinner = document.createElement('i')
-  spinner.alt = 'delete action'
+  const spinner = document.createElement('i');
+  spinner.alt = 'delete action';
   spinner.setAttribute('class', 'fa fa-spinner fa-spin');
   spinner.setAttribute('style', 'font-size:24px;color:red;');
   console.log('Element: ', el_to_delete);
-  el_to_delete.replaceWith(spinner)
+  el_to_delete.replaceWith(spinner);
 	
 	$.ajax({
 		url: DELETE_URL,
@@ -38,14 +38,14 @@ const deleteAction = (path, el_to_delete) => {
 		type: "post",
 	}).done((res) => {
 		if (res.message === 'Update Successful') {
-			spinner.remove()
-			parent.removeClass('available')
+			spinner.remove();
+			parent.removeClass('available');
 			parent.addClass('deleted')
 		}
 	}).fail(error => {
 		console.log(`Error: ${error.status}: ${error.statusText}` )
 	})
-}
+};
 
 $(window).on('load', function() {
 	$('.directory-row').on('click', expand_dir_view);

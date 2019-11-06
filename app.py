@@ -99,7 +99,7 @@ def file_manager():
 
     elif request.method == 'GET':
 
-        file_tree = db.router_files.find_one({})
+        # file_tree = db.router_files.find_one({})
         disk_info = db.free_space.find_one({})['disk_info']
 
         if file_tree:
@@ -203,6 +203,22 @@ def timestamp_to_datetime(timestamp):
     if timestamp is None:
         return ""
     return datetime.fromtimestamp(timestamp)
+
+@app.template_filter('file_icon')
+def file_icon(file_name):
+    file_ext = {
+        "fa fa-file-video-o": ['mkv', 'avi', 'mp4'],
+        "fa fa-file-image-o": ['jpg', 'jpeg', 'png'],
+        "fa fa-file-text-o": ['pdf', 'txt', 'xml', 'srt', 'docx', 'epub', 'nfo', 'm3u'],
+        "fa fa-file-audio-o": ['mp3', 'flac'],
+        "fa fa-file-archive-o": ['zip', 'rar', 'tar']
+    }
+    misc = "fa fa-file-o"
+    extension = file_name.split('.')[-1].lower()
+    for k, v in file_ext.items():
+        if extension in v:
+            return k
+    return misc
 
 
 if __name__ == "__main__":
