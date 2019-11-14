@@ -99,16 +99,16 @@ def file_manager():
 
     elif request.method == 'GET':
 
-        # file_tree = db.router_files.find_one({})
+        file_tree = db.router_files.find_one({})
         disk_info = db.free_space.find_one({})['disk_info']
 
         if file_tree:
             files = {
                 'type': 'directory',
                 'name': 'Home Router Files',
-                 'children': file_tree['children'],
-                 'path': './',
-                 'status': 'READONLY'
+                'children': file_tree['children'],
+                'path': './',
+                'status': 'READONLY'
             }
 
             return render_template('home.html', file_tree=files, disk_info=disk_info,
