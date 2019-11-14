@@ -22,7 +22,16 @@
 {% macro renderFile(elem) %}
     <div class="container  {{ elem['status'] }}" id="dir-files" data-parent="{{ parent }}">
         <div class="row file-div">
-          <div class="col-9 dir-name">{{ elem['name'] }}</div>
+          <div class="col-9 dir-name">
+              <div class="row">
+                  <div class="col-1 icon-div">
+                      <i class="{{ elem['name']|file_icon }}" aria-hidden="true" style="font-size:16px;color:darkgreen"></i>
+                  </div>
+                  <div class="col-11">
+                      {{ elem['name'] }}
+                  </div>
+              </div>
+          </div>
           <div class="col-3 ml-auto">
             <div class="row">
                 <div class="col-9 file-size">
@@ -79,7 +88,7 @@
 {% endmacro %}
 {% block container %}
     <div class="wrapper">
-        <div>
+        <div class="info-view">
             {% for row in file_tree['children']|sort(attribute='type', reverse = True) %}
                 {{ renderElements(row, 0) }}
             {% endfor %}
